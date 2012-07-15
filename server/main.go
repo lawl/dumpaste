@@ -51,7 +51,7 @@ func Gethandler(w http.ResponseWriter, r *http.Request) {
 	if _, err := strconv.Atoi(fname); err == nil {
 		c, err := ioutil.ReadFile(DATAPATH + fname)
 		if err == nil {
-			fmt.Fprint(w, c)
+			fmt.Fprint(w, string(c))
 			return
 		}
 	}
@@ -69,15 +69,15 @@ func Mainhandler(w http.ResponseWriter, r *http.Request) {
 
 func Resourcehandler(w http.ResponseWriter, r *http.Request) {
 	fname := r.URL.Path[len(RESOURCEPATH):]
-    if fname== "" {
+	if fname == "" {
 		http.Error(w, "404 File not found", http.StatusNotFound)
-        return;
-    }
+		return
+	}
 	if strings.Contains(fname, "..") || fname[:1] == "/" {
 		http.Error(w, "Nice try. Now fuck off", http.StatusForbidden)
 		return
 	}
-    fname = UIPATH + fname;
+	fname = UIPATH + fname
 	if FileExists(fname) {
 		ui, err := ioutil.ReadFile(fname)
 		if err == nil {

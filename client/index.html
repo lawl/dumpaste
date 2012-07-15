@@ -1,0 +1,98 @@
+<html>
+<head>
+<title>Pastebin</title>
+<style type="text/css">
+body
+{
+	background: white;
+	font-family: monospace;
+	color: black;
+}
+
+h1
+{
+	font-size: 40pt;
+	text-align: center;
+}
+
+h1 a
+{
+color: black;
+text-decoration: none;
+}
+
+h1 a:hover
+{
+color: black;
+text-decoration: none;
+}
+
+h1 a:visited
+{
+color: black;
+text-decoration: none;
+}
+
+h2
+{
+padding: 0px;
+margin: 0px;
+
+}
+
+table th{
+	text-align:left;
+}
+a
+{
+	color: blue;
+}
+
+a:visited
+{
+	color: blue;
+}
+
+
+a:hover
+{
+	background: blue;
+	color: white;
+
+}
+textarea {
+    width: 100%;
+}
+
+#content
+{
+	padding-left: 15%;
+	width: 70%;
+
+}
+#paste{
+	padding: 5px;
+    width: 100%;
+    display:block;
+}
+</style>
+<link rel="stylesheet" type="text/css" href="c/prettify/desert.css">
+<script src="c/js/jquery.min.js"></script>
+<script src="c/js/aes.js"></script>
+<script src="c/prettify/prettify.js"></script>
+<script src="c/js/paste.js"></script>
+</head>
+<body>
+<h1>Pastebin</h1>
+<div id="content">
+
+<div style="float:right"><a href="/">Create a new paste</a></div>
+<br />
+<div id="paster" style="display: none;">
+<textarea name="r" id="r" rows="50" cols="20"></textarea>
+<input type="button" id="savebtn" value="Paste this shit" onclick="pasteIt()"/>
+</div>
+<pre style="display:none;" class="prettyprint linenums"><code id="paste"></code></pre>
+<noscript><span id="youneedjs" style="text-align:center;width:100%;display:block;padding-top:10%;font-size:30pt;color:red">You need javascript!!1!</span></noscript>
+</body>
+</html>
