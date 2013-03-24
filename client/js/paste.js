@@ -1,3 +1,4 @@
+var pastecontent;
 function getRandomPassword(){
     return CryptoJS.lib.WordArray.random(24).toString(CryptoJS.enc.Base64).replace("+","_");
 }
@@ -36,9 +37,15 @@ function getBin(id,password) {
 
 function showBin(c) {
     $("#paster").hide();
+    $("#download").show();
     $("#paste").text(c);
     prettyPrint();
     $("code,pre").show();
+    pastecontent=c;
+}
+
+function downloadPaste() {
+    window.location = 'data:text/plain,' + escape(pastecontent);
 }
 
 $(document).ready(function(){
@@ -50,5 +57,6 @@ $(document).ready(function(){
         }
     }else{
         $("#paster").show();
+        $("#download").hide();
     }
 });
