@@ -18,8 +18,9 @@ function pasteIt(){
             var res = data.split(/:/);
             if(res[0]=="OK"){
                 $('#r').val("");
-                window.location = findBaseURL() + "#" + res[1] + ":" + pass;
-                getBin(res[1],pass);
+                //window.location = findBaseURL() + "#" + res[1] + ":" + pass;
+		window.location.hash = "#" + res[1] + ":" + pass;
+                //getBin(res[1],pass);
             }
         });
 }
@@ -36,8 +37,11 @@ function getBin(id,password) {
 }
 
 function showBin(c) {
+    $(".prettyprint").empty();
+    $(".prettyprint").append('<code id="paste"></code>');
     $("#paster").hide();
     $("#download").show();
+    $("#newpaste").show();
     $("#paste").text(c);
     prettyPrint();
     $("code,pre").show();
@@ -48,7 +52,7 @@ function downloadPaste() {
     window.location = 'data:text/plain,' + escape(pastecontent);
 }
 
-$(document).ready(function(){
+function initPage(){
     var url=window.location+'';
     if(url.indexOf("#") != -1){
         var d = url.split("#")[1].split(":");
@@ -58,5 +62,10 @@ $(document).ready(function(){
     }else{
         $("#paster").show();
         $("#download").hide();
+        $("#newpaste").hide();
+	$("pre").hide();
     }
-});
+}
+
+$(document).ready(initPage);
+$(window).on('hashchange', initPage);

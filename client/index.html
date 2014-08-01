@@ -69,6 +69,7 @@ textarea {
 	padding-left: 15%;
 	width: 70%;
 
+
 }
 #paste{
 	padding: 5px;
@@ -83,17 +84,18 @@ textarea {
 <script src="c/js/paste.js"></script>
 </head>
 <body>
-<h1>Pastebin</h1>
+<!--<h1>Pastebin</h1>-->
 <div id="content">
 
 <div id="download" style="float:right"><a href="javascript:downloadPaste();">View RAW Version</a></div>
-<div style="float:left"><a href="/">Create a new paste</a></div>
+<div id="newpaste" style="float:left"><a href="/">Create a new paste</a></div>
 <br />
 <div id="paster" style="display: none;">
-<textarea name="r" id="r" rows="50" cols="20"></textarea>
+<textarea name="r" id="r" rows="50" cols="20" placeholder="Paste shit here"></textarea>
 <input type="button" id="savebtn" value="Paste this shit" onclick="pasteIt()"/>
 </div>
-<pre style="display:none;" class="prettyprint linenums"><code id="paste"></code></pre>
+<pre style="display:none;overflow-y:scroll;" class="prettyprint linenums"><code id="paste"></code></pre>
 <noscript><span id="youneedjs" style="text-align:center;width:100%;display:block;padding-top:10%;font-size:30pt;color:red">You need javascript!!1!</span></noscript>
+<div style="float:right">Don't trust your browser crypto! Use openssl with a <a href="https://paste.dumbinter.net/#535:FMxwssf5JgeIgd3HcFQ9MMjZ4Dl/DGIO34CrrT51a8bZ">console client</a>(0.1) <em>Use OpenSSL they said. It's secure, they said.</em></div>
 </body>
 </html>
