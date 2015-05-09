@@ -17,9 +17,6 @@ function pasteIt(){
     var f = ulbox.files[0]; 
     if(f){
         readSingleFile(ulbox, function(data){
-            if(!isImage(data)){
-                alert("Invalid file selected, use jpg,png or gif.");
-            }
             var enccontent = getContentEncrypted(pass, data);
             uploadContent(enccontent, pass);
         });
@@ -73,7 +70,12 @@ function showBin(c) {
 }
 
 function downloadPaste() {
-    window.location = 'data:text/plain,' + escape(pastecontent);
+    var mime="data:text/plain,";
+    var imgtype = findImgType(pastecontent);
+    if(imgtype !== false) {
+        mime = 'data:'+imgtype+',';
+    }
+    window.location = mime + escape(pastecontent);
 }
 
 function readSingleFile(uploadbox, cb) {
@@ -91,10 +93,10 @@ function isImage(data){
 }
 
 function findImgType(data){
-    var imageHeaders = ["89504e470d0a1a0a", "png",
-                        "ffd8", "jpg",
-                        "474946383761", "gif",
-                        "474946383961", "gif"]; 
+    var imageHeaders = ["89504e470d0a1a0a", "image/png",
+                        "ffd8", "image/jpg",
+                        "474946383761", "image/gif",
+                        "474946383961", "image/gif"]; 
 
     for(var i=0; i < imageHeaders.length; i+=2){
         var binHeader = hex2bin(imageHeaders[i]);
