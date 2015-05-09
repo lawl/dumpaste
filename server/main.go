@@ -5,11 +5,12 @@ import (
 	"io/ioutil"
 	"net/http"
 	"os"
-	"strconv"
 	"strings"
+    "crypto/sha256"
+    "encoding/base64"
+    "path/filepath"
 )
 
-const COUNTERFILE = "data/count"
 const DATAPATH = "data/"
 const HTTPSTOREPATH = "/store"
 const HTTPGETPATH = "/get/"
@@ -19,18 +20,12 @@ const UIFILE = "../client/index.html"
 const UIPATH = "../client/"
 const UMASK = 0664
 
-func GetId() int {
-	id := 0
-	c, err := ioutil.ReadFile(COUNTERFILE)
-	if err == nil {
-		id, err = strconv.Atoi(string(c))
-		if err != nil {
-			id = 0
-		}
-	}
-	id += 1
-	ioutil.WriteFile(COUNTERFILE, []byte(strconv.Itoa(id)), UMASK)
-	return id
+func GetId(data []byte) string {
+    hash := sha256.New()
+    hash.Write(data)
+    md := hash.Sum(nil)
+    mdStr := base64.URLEncoding.EncodeToString(md)
+	return mdStr
 }
 
 func FileExists(path string) bool {
@@ -42,18 +37,18 @@ func FileExists(path string) bool {
 }
 
 func Storehandler(w http.ResponseWriter, r *http.Request) {
-	id := GetId()
-	ioutil.WriteFile(DATAPATH+strconv.Itoa(id), []byte(r.FormValue("r")), UMASK)
-	fmt.Fprintf(w, "OK:%d", id)
+    content := []byte(r.FormValue("r"));
+	id := GetId(content)
+	ioutil.WriteFile(DATAPATH+id, content, UMASK)
+	fmt.Fprintf(w, "OK:%s", id)
 }
 func Gethandler(w http.ResponseWriter, r *http.Request) {
 	fname := r.URL.Path[len(HTTPGETPATH):]
-	if _, err := strconv.Atoi(fname); err == nil {
-		c, err := ioutil.ReadFile(DATAPATH + fname)
-		if err == nil {
-			fmt.Fprint(w, string(c))
-			return
-		}
+    cleanName := filepath.FromSlash(fname);
+	c, err := ioutil.ReadFile(DATAPATH + cleanName)
+	if err == nil {
+		fmt.Fprint(w, string(c))
+		return
 	}
 	fmt.Fprint(w, "FAIL")
 }
@@ -89,9 +84,10 @@ func Resourcehandler(w http.ResponseWriter, r *http.Request) {
 }
 
 func main() {
+    port := os.Args[1];
 	http.HandleFunc(HTTPSTOREPATH, Storehandler)
 	http.HandleFunc(HTTPGETPATH, Gethandler)
 	http.HandleFunc(RESOURCEPATH, Resourcehandler)
 	http.HandleFunc(MAINPATH, Mainhandler)
-	http.ListenAndServe(":8080", nil)
+	http.ListenAndServe(port, nil)
 }
