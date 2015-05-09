@@ -17,6 +17,10 @@ function pasteIt(){
     var f = ulbox.files[0]; 
     if(f){
         readSingleFile(ulbox, function(data){
+            if(!isImage(data)){
+                alert("Invalid file selected, use jpg,png or gif.");
+                return;
+            }
             var enccontent = getContentEncrypted(pass, data);
             uploadContent(enccontent, pass);
         });
@@ -73,7 +77,7 @@ function downloadPaste() {
     var mime="data:text/plain,";
     var imgtype = findImgType(pastecontent);
     if(imgtype !== false) {
-        mime = 'data:'+imgtype+',';
+        mime = 'data:'+imgtype+';base64,';
     }
     window.location = mime + escape(pastecontent);
 }
