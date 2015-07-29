@@ -8,7 +8,7 @@ function getContentEncrypted(password, content){
 }
 
 function decryptContent(c,pw) {
-    return CryptoJS.AES.decrypt(c,pw);
+    return CryptoJS.AES.decrypt(c.split(/\s/).join(''),pw);
 }
 
 function pasteIt(){
@@ -59,7 +59,7 @@ function showBin(c) {
     $("#download").show();
     $("#newpaste").show();
     if(t !== false) {
-        var img = "data:image/"+t+";base64," + btoa(c);
+        var img = "data:"+t+";base64," + btoa(c);
         $(".prettyprint").append('<img id="pasteImg"></img>');
         $("#pasteImg").attr('src',img);
         $("pre,img").show();
