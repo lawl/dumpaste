@@ -48,7 +48,7 @@ function pasteIt() {
 function uploadContent(key, blob, mime, fext) {
 
     var req = new XMLHttpRequest();
-    req.open("POST", '/store', true);
+    req.open("POST", '/store?exp='+document.getElementById('expires').value, true);
     req.onload = function (evt) {
         var res = req.responseText.split(/:/);
         if (res[0] == "OK") {

@@ -68,7 +68,8 @@
 
 		<div class="view view_new_paste">
 			<div id="paster">
-				<textarea name="r" id="r" rows="50" cols="20" placeholder="Paste text and images here, or drag and drop any file."></textarea>
+				<textarea name="r" id="r" rows="50" cols="20"
+					placeholder="Paste text and images here, or drag and drop any file."></textarea>
 			</div>
 		</div>
 
@@ -77,11 +78,22 @@
 		</div>
 
 		<div class="view view_upload">
-				<input type="button" id="savebtn" value="Paste this shit" onclick="pasteIt()" />
-				<div style="float:right">
-					or pick a file <input type="file" id="filef" name="filef">
-				</div>
+			<input type="button" id="savebtn" value="Paste this shit" onclick="pasteIt()" />
+			Expires:
+			<select id="expires">
+				<option value="-1" selected="selected">Never (if > 100kb 64 hrs)</option>
+				<option value="1">1 hour</option>
+				<option value="2">2 hours</option>
+				<option value="4">4 hours</option>
+				<option value="8">8 hours</option>
+				<option value="16">16 hours</option>
+				<option value="32">32 hours</option>
+				<option value="64">64 hours</option>
+			</select>
+			<div style="float:right">
+				or pick a file <input type="file" id="filef" name="filef">
 			</div>
+		</div>
 
 		<div class="view view_show_textpaste">
 			<pre style="overflow-y:scroll;" class="prettyprint linenums" id="paste"></pre>
