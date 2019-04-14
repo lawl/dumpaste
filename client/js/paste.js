@@ -120,7 +120,7 @@ function readFile(f, cb) {
 }
 
 function isImage(mime) {
-    return ['image/jpg', 'image/jpeg', 'image/png', 'image/png'].includes(mime);
+    return ['image/jpg', 'image/jpeg', 'image/png', 'image/gif', 'image/webp', 'image/avif'].includes(mime);
 }
 
 function pagestateFollowsHash() {
