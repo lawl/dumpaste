@@ -1,3 +1,5 @@
+var G_dataTransferFile = null;
+
 function getNewKey() {
     return window.crypto.subtle.generateKey({
             name: "AES-CBC",
@@ -26,8 +28,13 @@ function pasteIt() {
     getNewKey().then(key => {
         var ulbox = document.getElementById('filef');
         var f = ulbox.files[0];
+
+        if (!f && G_dataTransferFile) {
+            f = G_dataTransferFile;
+        }
+
         if (f) {
-            readSingleFile(ulbox, function (data, fext) {
+            readFile(f, function (data, fext) {
                 var enccontent = getContentEncrypted(key, data);
                 enccontent.then(blob => uploadContent(key, blob, f.type, fext));
             });
@@ -103,8 +110,7 @@ function extractFileExtensionFromName(filename) {
     return filename.split('.').pop();
 }
 
-function readSingleFile(uploadbox, cb) {
-    var f = uploadbox.files[0];
+function readFile(f, cb) {
     var r = new FileReader();
     r.onload = function (e) {
         var contents = e.target.result;
@@ -117,7 +123,7 @@ function isImage(mime) {
     return ['image/jpg', 'image/jpeg', 'image/png', 'image/png'].includes(mime);
 }
 
-function initPage() {
+function pagestateFollowsHash() {
     var url = window.location + '';
     if (url.indexOf("#") != -1) {
         var d = url.split("#")[1].split(":");
@@ -125,7 +131,7 @@ function initPage() {
             getBin(d[0], d[1], d[2]);
         }
     } else {
-        setView('new_paste');
+        setView('new_paste', 'upload');
     }
 }
 
@@ -166,4 +172,35 @@ function base64ToArrayBuffer(base64) {
 
 
 document.addEventListener("DOMContentLoaded", initPage);
-window.onhashchange = initPage;
+window.onhashchange = pagestateFollowsHash;
+
+function initPage() {
+
+    window.addEventListener("paste", function (e) {
+        if (e.clipboardData.items.length < 1) return;
+        var file = e.clipboardData.items[0];
+        if (file.kind != 'file') return;
+        G_dataTransferFile = file.getAsFile();
+        document.getElementById('uploadFrom').textContent = "Upload " + extractFileExtensionFromName(G_dataTransferFile.name) + " from clipboard"
+        setView('new_file_transfer', 'upload');
+    });
+    window.addEventListener("dragover",function(e){
+        e = e || event;
+        e.preventDefault();
+      },false);
+    window.addEventListener('drop', function (e) {
+        console.log(e);
+        e.stopPropagation();
+        e.preventDefault();
+        var files = e.dataTransfer.items; // Array of all files
+        
+        if (files < 1) return;
+        var file = files[0];
+        if (file.kind != 'file') return;
+        G_dataTransferFile = file.getAsFile();
+        document.getElementById('uploadFrom').textContent = "Upload drag and dropped " + extractFileExtensionFromName(G_dataTransferFile.name) + " file"
+        setView('new_file_transfer', 'upload');
+    });
+
+    pagestateFollowsHash();
+}

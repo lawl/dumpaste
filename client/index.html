@@ -68,14 +68,20 @@
 
 		<div class="view view_new_paste">
 			<div id="paster">
-				<textarea name="r" id="r" rows="50" cols="20" placeholder="Paste shit here"></textarea>
+				<textarea name="r" id="r" rows="50" cols="20" placeholder="Paste text and images here, or drag and drop any file."></textarea>
+			</div>
+		</div>
+
+		<div class="view view_new_file_transfer" style="text-align: center;">
+			<span id="uploadFrom" style="font-size: 69px;display:block; padding: 150px 0;"></span>
+		</div>
+
+		<div class="view view_upload">
 				<input type="button" id="savebtn" value="Paste this shit" onclick="pasteIt()" />
 				<div style="float:right">
-					or upload a file <input type="file" id="filef" name="filef">
+					or pick a file <input type="file" id="filef" name="filef">
 				</div>
 			</div>
-
-		</div>
 
 		<div class="view view_show_textpaste">
 			<pre style="overflow-y:scroll;" class="prettyprint linenums" id="paste"></pre>
@@ -86,13 +92,11 @@
 		</div>
 
 		<div class="view view_show_download" style="text-align: center;">
-				<a download="" id="forceDownload" style="font-size: 69px;display:block; padding: 150px 0;">
-						<span>Click to download</span>
-						<span id="fileext"></span>
-				</a>
+			<a download="" id="forceDownload" style="font-size: 69px;display:block; padding: 150px 0;">
+				<span>Click to download</span>
+				<span id="fileext"></span>
+			</a>
 		</div>
-
-		<div style="float:right">Old data gone, cause the front fell off.</div>
 </body>
 
 </html>
