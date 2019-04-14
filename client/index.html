@@ -1,3 +1,4 @@
+<!DOCTYPE html>
 <html>
 
 <head>
@@ -7,36 +8,6 @@
 			background: white;
 			font-family: monospace;
 			color: black;
-		}
-
-		h1 {
-			font-size: 40pt;
-			text-align: center;
-		}
-
-		h1 a {
-			color: black;
-			text-decoration: none;
-		}
-
-		h1 a:hover {
-			color: black;
-			text-decoration: none;
-		}
-
-		h1 a:visited {
-			color: black;
-			text-decoration: none;
-		}
-
-		h2 {
-			padding: 0px;
-			margin: 0px;
-
-		}
-
-		table th {
-			text-align: left;
 		}
 
 		a {
@@ -67,36 +38,61 @@
 			display: block;
 		}
 
+		.view {
+			display: none;
+			width: 100%;
+		}
+
 		img {
 			max-width: 100%;
-			display: block;
-			margin: 0 auto;
 		}
 	</style>
 	<link rel="stylesheet" type="text/css" href="c/prettify/sons-of-obsidian.css">
-	<script src="c/js/jquery.min.js"></script>
 	<script src="c/prettify/prettify.js"></script>
 	<script src="c/js/paste.js"></script>
 </head>
 
 <body>
 	<div id="content">
-
-		<div id="download" style="float:right"><a id="dlLink">View RAW Version</a></div>
-		<div id="newpaste" style="float:left"><a href="/">Create a new paste</a></div>
-		<br />
-		<div id="paster" style="display: none;">
-			<textarea name="r" id="r" rows="50" cols="20" placeholder="Paste shit here"></textarea>
-			<input type="button" id="savebtn" value="Paste this shit" onclick="pasteIt()" />
-			<div style="float:right">
-				or upload a file <input type="file" id="filef" name="filef">
-			</div>
-		</div>
-		<pre style="display:none;overflow-y:scroll;" class="prettyprint linenums"><code id="paste"></code></pre>
-		<noscript><span id="youneedjs"
+		<noscript>
+			<span id="youneedjs"
 				style="text-align:center;width:100%;display:block;padding-top:10%;font-size:30pt;color:red">You need
-				javascript!!1!</span></noscript>
-		<div style="float:right">TODO: write new console client</div>
+				javascript!!1!</span>
+		</noscript>
+
+		<div class="view view_header">
+			<div id="download" style="float:right"><a id="dlLink">View RAW Version</a></div>
+			<div id="newpaste" style="float:left"><a href="/">Create a new paste</a></div>
+			<br />
+		</div>
+
+		<div class="view view_new_paste">
+			<div id="paster">
+				<textarea name="r" id="r" rows="50" cols="20" placeholder="Paste shit here"></textarea>
+				<input type="button" id="savebtn" value="Paste this shit" onclick="pasteIt()" />
+				<div style="float:right">
+					or upload a file <input type="file" id="filef" name="filef">
+				</div>
+			</div>
+
+		</div>
+
+		<div class="view view_show_textpaste">
+			<pre style="overflow-y:scroll;" class="prettyprint linenums" id="paste"></pre>
+		</div>
+
+		<div class="view view_show_image" style="text-align: center;">
+			<img id="displayimage" />
+		</div>
+
+		<div class="view view_show_download" style="text-align: center;">
+				<a download="" id="forceDownload" style="font-size: 69px;display:block; padding: 150px 0;">
+						<span>Click to download</span>
+						<span id="fileext"></span>
+				</a>
+		</div>
+
+		<div style="float:right">Old data gone, cause the front fell off.</div>
 </body>
 
 </html>

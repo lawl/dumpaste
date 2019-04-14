@@ -79,6 +79,12 @@ func resourcehandler(w http.ResponseWriter, r *http.Request) {
 	}
 	fname = UIPATH + fname
 	if fileExists(fname) {
+		if strings.HasSuffix(fname, ".js") {
+			w.Header().Set("Content-Type", "text/javascript")
+		}
+		if strings.HasSuffix(fname, ".css") {
+			w.Header().Set("Content-Type", "text/css")
+		}
 		ui, err := ioutil.ReadFile(fname)
 		if err == nil {
 			fmt.Fprint(w, string(ui))

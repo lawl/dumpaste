@@ -27,26 +27,26 @@ function pasteIt() {
         var ulbox = document.getElementById('filef');
         var f = ulbox.files[0];
         if (f) {
-            readSingleFile(ulbox, function (data) {
+            readSingleFile(ulbox, function (data, fext) {
                 var enccontent = getContentEncrypted(key, data);
-                enccontent.then(blob => uploadContent(key, blob, f.type));
+                enccontent.then(blob => uploadContent(key, blob, f.type, fext));
             });
         } else {
-            var enccontent = getContentEncrypted(key, new TextEncoder().encode($('#r').val()));
-            enccontent.then(blob => uploadContent(key, blob, 'text/plain'));
+            var enccontent = getContentEncrypted(key, new TextEncoder().encode(document.getElementById('r').value));
+            enccontent.then(blob => uploadContent(key, blob, 'text/plain', 'txt'));
         }
     });
 }
 
-function uploadContent(key, blob, mime) {
+function uploadContent(key, blob, mime, fext) {
 
     var req = new XMLHttpRequest();
     req.open("POST", '/store', true);
     req.onload = function (evt) {
         var res = req.responseText.split(/:/);
         if (res[0] == "OK") {
-            $('#r').val("");
-            crypto.subtle.exportKey('raw', key).then(raw => window.location.hash = "#" + res[1] + ":" + arrayBufferToBase64(raw) + ':' + mime);
+            document.getElementById('r').value = '';
+            crypto.subtle.exportKey('raw', key).then(raw => window.location.hash = "#" + res[1] + ":" + arrayBufferToBase64(raw) + ':' + mime + ':' + fext);
         }
     };
 
@@ -59,7 +59,7 @@ function findBaseURL() {
 
 function getBin(id, rawKey, mime) {
     var xhr = new XMLHttpRequest();
-    xhr.onreadystatechange = function() {
+    xhr.onreadystatechange = function () {
         if (xhr.readyState === 4) {
             crypto.subtle.importKey('raw', base64ToArrayBuffer(rawKey), 'AES-CBC', true, ["encrypt", "decrypt"]).then(key =>
                 decryptContent(key, xhr.response).then(data => showBin(data, mime))
@@ -72,22 +72,35 @@ function getBin(id, rawKey, mime) {
 }
 
 function showBin(c, mime) {
-    $(".prettyprint").empty();
-    $("#paster").hide();
-    $("#download").show();
-    $("#newpaste").show();
     var dataView = new DataView(c);
-    var blob = new Blob([dataView], { type: mime });
+    var blob = new Blob([dataView], {
+        type: mime
+    });
     var blobURL = window.URL.createObjectURL(blob);
-    document.getElementById('dlLink').href=blobURL;
-    if (mime != 'text/plain') {
-        document.location = blobURL;
-    } else {
-        $(".prettyprint").append('<code id="paste"></code>');
-        $("#paste").text(new TextDecoder().decode(c));
-        $("code,pre").show();
+    document.getElementById('dlLink').href = blobURL;
+    if (mime == 'text/plain') {
+        document.getElementById('paste').textContent = new TextDecoder().decode(c);
         prettyPrint();
+        setView('show_textpaste', 'header');
+    } else if (isImage(mime)) {
+        document.getElementById('displayimage').src = blobURL;
+        setView('show_image', 'header');
+    } else {
+        var fext = location.hash.split(/:/);
+        if (fext[3]) {
+            fext = fext[3];
+        } else {
+            fext = null
+        }
+        document.getElementById('forceDownload').href = blobURL;
+        document.getElementById('forceDownload').download = 'download' + (fext ? '.' + fext : '');
+        document.getElementById('fileext').textContent = (fext ? fext : '');
+        setView('show_download', 'header');
     }
+}
+
+function extractFileExtensionFromName(filename) {
+    return filename.split('.').pop();
 }
 
 function readSingleFile(uploadbox, cb) {
@@ -95,7 +108,7 @@ function readSingleFile(uploadbox, cb) {
     var r = new FileReader();
     r.onload = function (e) {
         var contents = e.target.result;
-        cb(contents);
+        cb(contents, extractFileExtensionFromName(f.name));
     }
     r.readAsArrayBuffer(f);
 }
@@ -108,14 +121,23 @@ function initPage() {
     var url = window.location + '';
     if (url.indexOf("#") != -1) {
         var d = url.split("#")[1].split(":");
-        if (typeof d[0] !== 'undefined' && d[0].length >1) {
+        if (typeof d[0] !== 'undefined' && d[0].length > 1) {
             getBin(d[0], d[1], d[2]);
         }
     } else {
-        $("#paster").show();
-        $("#download").hide();
-        $("#newpaste").hide();
-        $("pre").hide();
+        setView('new_paste');
+    }
+}
+
+function setView() {
+    var views = document.querySelectorAll('.view');
+    [...views].forEach((v) => {
+        v.style.display = 'none';
+    });
+
+    for (var view of arguments) {
+        var el = document.querySelector('.view_' + view);
+        el.style.display = 'block';
     }
 }
 
@@ -142,5 +164,6 @@ function base64ToArrayBuffer(base64) {
     return bytes.buffer;
 }
 
-$(document).ready(initPage);
-$(window).on('hashchange', initPage);
+
+document.addEventListener("DOMContentLoaded", initPage);
+window.onhashchange = initPage;
