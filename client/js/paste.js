@@ -40,12 +40,12 @@ function pasteIt() {
             });
         } else {
             var enccontent = getContentEncrypted(key, new TextEncoder().encode(document.getElementById('r').value));
-            enccontent.then(blob => uploadContent(key, blob, 'text/plain', 'txt'));
+            enccontent.then(blob => uploadContent(key, blob, 'text/plain', 'file.txt'));
         }
     });
 }
 
-function uploadContent(key, blob, mime, fext) {
+function uploadContent(key, blob, mime, fname) {
 
     var req = new XMLHttpRequest();
     req.open("POST", '/store?exp=' + document.getElementById('expires').value, true);
@@ -53,7 +53,7 @@ function uploadContent(key, blob, mime, fext) {
         var res = req.responseText.split(/:/);
         if (res[0] == "OK") {
             document.getElementById('r').value = '';
-            crypto.subtle.exportKey('raw', key).then(raw => window.location.hash = "#" + res[1] + ":" + arrayBufferToBase64(raw) + ':' + mime + ':' + fext);
+            crypto.subtle.exportKey('raw', key).then(raw => window.location.hash = "#" + res[1] + ":" + arrayBufferToBase64(raw) + ':' + mime + ':' + fname);
         }
     };
 
