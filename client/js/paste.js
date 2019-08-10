@@ -97,11 +97,11 @@ function showBin(c, mime) {
         if (fname[3]) {
             fname = fname[3];
         } else {
-            fname = null
+            fname = fname[0].substr(1)
         }
         document.getElementById('forceDownload').href = blobURL;
-        document.getElementById('forceDownload').download = (fname ? fname : 'download');
-        document.getElementById('fileext').textContent = (fname ? fname : '');
+        document.getElementById('forceDownload').download = fname
+        document.getElementById('fileext').textContent = fname
         setView('show_download', 'header');
     }
 }
