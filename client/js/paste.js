@@ -48,7 +48,7 @@ function pasteIt() {
 function uploadContent(key, blob, mime, fext) {
 
     var req = new XMLHttpRequest();
-    req.open("POST", '/store?exp='+document.getElementById('expires').value, true);
+    req.open("POST", '/store?exp=' + document.getElementById('expires').value, true);
     req.onload = function (evt) {
         var res = req.responseText.split(/:/);
         if (res[0] == "OK") {
@@ -93,28 +93,24 @@ function showBin(c, mime) {
         document.getElementById('displayimage').src = blobURL;
         setView('show_image', 'header');
     } else {
-        var fext = location.hash.split(/:/);
-        if (fext[3]) {
-            fext = fext[3];
+        var fname = location.hash.split(/:/);
+        if (fname[3]) {
+            fname = fname[3];
         } else {
-            fext = null
+            fname = null
         }
         document.getElementById('forceDownload').href = blobURL;
-        document.getElementById('forceDownload').download = 'download' + (fext ? '.' + fext : '');
-        document.getElementById('fileext').textContent = (fext ? fext : '');
+        document.getElementById('forceDownload').download = (fname ? fname : 'download');
+        document.getElementById('fileext').textContent = (fname ? fname : '');
         setView('show_download', 'header');
     }
-}
-
-function extractFileExtensionFromName(filename) {
-    return filename.split('.').pop();
 }
 
 function readFile(f, cb) {
     var r = new FileReader();
     r.onload = function (e) {
         var contents = e.target.result;
-        cb(contents, extractFileExtensionFromName(f.name));
+        cb(contents, f.name);
     }
     r.readAsArrayBuffer(f);
 }
@@ -181,24 +177,24 @@ function initPage() {
         var file = e.clipboardData.items[0];
         if (file.kind != 'file') return;
         G_dataTransferFile = file.getAsFile();
-        document.getElementById('uploadFrom').textContent = "Upload " + extractFileExtensionFromName(G_dataTransferFile.name) + " from clipboard"
+        document.getElementById('uploadFrom').textContent = "Upload " + G_dataTransferFile.name
         setView('new_file_transfer', 'upload');
     });
-    window.addEventListener("dragover",function(e){
+    window.addEventListener("dragover", function (e) {
         e = e || event;
         e.preventDefault();
-      },false);
+    }, false);
     window.addEventListener('drop', function (e) {
         console.log(e);
         e.stopPropagation();
         e.preventDefault();
         var files = e.dataTransfer.items; // Array of all files
-        
+
         if (files < 1) return;
         var file = files[0];
         if (file.kind != 'file') return;
         G_dataTransferFile = file.getAsFile();
-        document.getElementById('uploadFrom').textContent = "Upload drag and dropped " + extractFileExtensionFromName(G_dataTransferFile.name) + " file"
+        document.getElementById('uploadFrom').textContent = "Upload " + G_dataTransferFile.name
         setView('new_file_transfer', 'upload');
     });
 
