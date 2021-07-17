@@ -92,6 +92,9 @@ function showBin(c, mime) {
     } else if (isImage(mime)) {
         document.getElementById('displayimage').src = blobURL;
         setView('show_image', 'header');
+    } else if (isVideo(mime)) {
+        document.getElementById('displayvideo').src = blobURL;
+        setView('show_video', 'header');
     } else {
         var fname = location.hash.split(/:/);
         if (fname[3]) {
@@ -117,6 +120,10 @@ function readFile(f, cb) {
 
 function isImage(mime) {
     return ['image/jpg', 'image/jpeg', 'image/png', 'image/gif', 'image/webp', 'image/avif'].includes(mime);
+}
+
+function isVideo(mime) {
+    return mime.startsWith("video/");
 }
 
 function pagestateFollowsHash() {
